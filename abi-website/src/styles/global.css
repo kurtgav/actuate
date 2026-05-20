@@ -1,0 +1,234 @@
+/* ─── Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--white); }
+
+/* ─── Base body ───────────────────────────────────────────────── */
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+img  { max-width: 100%; display: block; }
+a    { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+
+/* ─── Heading scale ───────────────────────────────────────────── */
+h1, .h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--fs-h1);
+  line-height: 0.96;
+  letter-spacing: -0.015em;
+  color: var(--graphite);
+  margin: 0;
+}
+h2, .h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--fs-h2);
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+  margin: 0;
+}
+h3, .h3 {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-h3);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+h4, .h4, .lede {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-lede);
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--steel);
+  margin: 0;
+}
+p, .body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--graphite-90);
+  margin: 0;
+}
+small, .small {
+  font-size: var(--fs-small);
+  line-height: 1.45;
+  color: var(--steel);
+}
+.caption {
+  font-size: var(--fs-small);
+  color: var(--concrete);
+  letter-spacing: 0.005em;
+}
+.italic-display {
+  font-family: var(--font-display);
+  font-style: italic;
+}
+code, .mono, kbd {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  letter-spacing: -0.01em;
+}
+.surface-bone { background: var(--bone); }
+.surface-plaster { background: var(--plaster); }
+.surface-graphite { background: var(--graphite); color: var(--bone-on-graphite); }
+
+/* ─── Layout container ────────────────────────────────────────── */
+.page { max-width: var(--page-max); margin: 0 auto; }
+
+/* ─── Grain texture overlay ───────────────────────────────────── */
+.grain { position: relative; }
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ─── Scroll reveal — base (variant: up, backward-compat) ────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 900ms var(--ease), transform 900ms var(--ease);
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Scroll reveal variants ─────────────────────────────────── */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-36px);
+  transition: opacity 900ms var(--ease), transform 900ms var(--ease);
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(36px);
+  transition: opacity 900ms var(--ease), transform 900ms var(--ease);
+}
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 900ms var(--ease), transform 900ms var(--ease);
+}
+.reveal-blur {
+  opacity: 0;
+  filter: blur(12px);
+  transition: opacity 900ms var(--ease), filter 900ms var(--ease);
+}
+.reveal-left.in,
+.reveal-right.in {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-scale.in {
+  opacity: 1;
+  transform: scale(1);
+}
+.reveal-blur.in {
+  opacity: 1;
+  filter: blur(0);
+}
+
+/* ─── Stagger reveal children ────────────────────────────────── */
+/* Children receive --stagger-delay via useStaggerReveal hook.
+   Apply .stagger-item to each child element. */
+.stagger-item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 700ms var(--ease), transform 700ms var(--ease);
+  transition-delay: var(--stagger-delay, 0ms);
+}
+.stagger-visible .stagger-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Reduced-motion overrides ───────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale,
+  .reveal-blur,
+  .stagger-item {
+    transition: opacity 200ms linear !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* ─── Toast notification ──────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 100;
+  background: var(--slate);
+  color: var(--white);
+  padding: 14px 22px;
+  font-size: 14px;
+  letter-spacing: -0.005em;
+  transform: translateY(40px);
+  opacity: 0;
+  transition: all 400ms var(--ease);
+  border-left: 2px solid var(--green);
+  font-weight: 500;
+}
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ─── Page transitions ───────────────────────────────────────── */
+.page-view { animation: fade 600ms var(--ease); }
+
+/* ─── Parallax / scroll-reveal primitives ────────────────────── */
+.parallax-window { position: relative; overflow: hidden; width: 100%; }
+.parallax-image { position: absolute; inset: -10% 0 -10% 0; background-size: cover; background-position: center; will-change: transform; transition: opacity 800ms var(--ease); opacity: 0; }
+.parallax-window.revealed .parallax-image { opacity: 1; }
+.scale-window { position: relative; overflow: hidden; background: var(--mist); }
+.scale-image { position: absolute; inset: 0; background-size: cover; background-position: center; will-change: transform; transition: transform 80ms linear; }
+
+/* ─── Utility classes ─────────────────────────────────────────── */
+.caption { font-size: var(--fs-small); color: var(--concrete); letter-spacing: 0.005em; }
+.italic-display { font-family: var(--font-display); font-style: italic; }
+code, .mono, kbd { font-family: var(--font-mono); font-size: 0.92em; letter-spacing: -0.01em; }
+.surface-bone { background: var(--bone); }
+.surface-plaster { background: var(--plaster); }
+.surface-graphite { background: var(--graphite); color: var(--bone-on-graphite); }
+
+/* ─── Keyframes ───────────────────────────────────────────────── */
+@keyframes scrollIndicator {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(300%); }
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+@keyframes fade {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
